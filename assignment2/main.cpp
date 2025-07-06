@@ -14,7 +14,8 @@
 #include <string>
 #include <unordered_set>
 
-std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
+std::string kYourName = "Feiyang Li"; // Don't forget to change this!
+std::string get_initials(const std::string s);
 
 /**
  * Takes in a file name and returns a set containing all of the applicant names as a set.
@@ -28,7 +29,15 @@ std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
  * to also change the corresponding functions in `utils.h`.
  */
 std::set<std::string> get_applicants(std::string filename) {
-  // STUDENT TODO: Implement this function.
+    std::ifstream ifs(filename);
+    if(!ifs.is_open()) return {};
+    std::string name;
+    std::set<std::string> s;
+    while(std::getline(ifs, name)) {
+      s.insert(name);
+    }
+    ifs.close();
+    return s;
 }
 
 /**
@@ -40,7 +49,15 @@ std::set<std::string> get_applicants(std::string filename) {
  * @return          A queue containing pointers to each matching name.
  */
 std::queue<const std::string*> find_matches(std::string name, std::set<std::string>& students) {
-  // STUDENT TODO: Implement this function.
+  std::queue<const std::string*> q;
+  // for(auto it = students.begin(); it != students.end(); it++) {
+  //   if((*it).at(0) == name.at(0)) q.push(&(*it));
+  // }
+
+  for(auto &s: students) {
+    if (!s.empty() && !name.empty() && get_initials(name) == get_initials(s)) q.push(&s);
+  }
+  return q;
 }
 
 /**
@@ -54,7 +71,26 @@ std::queue<const std::string*> find_matches(std::string name, std::set<std::stri
  *                Will return "NO MATCHES FOUND." if `matches` is empty.
  */
 std::string get_match(std::queue<const std::string*>& matches) {
-  // STUDENT TODO: Implement this function.
+    if(matches.empty()) return "NO MATCHES FOUND.";
+    
+    // For this example, we will just return the first match.
+    // You can implement your own logic here to determine the best match.
+    std::string match = *matches.front();
+    matches.pop();
+    
+    // You can add more complex logic here to choose a different match.
+    return match;
+
+}
+
+std::string get_initials(const std::string s) {
+  if(s.empty()) return {};
+  std::string ans = "";
+  ans += s[0];
+  for(int i = 0; i < s.size(); i++) {
+    if(s[i] == ' ' && i + 1 < s.size()) return ans + s[i + 1];
+  }
+  return {};
 }
 
 /* #### Please don't remove this line! #### */
