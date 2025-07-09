@@ -63,3 +63,65 @@ void User::set_friend(size_t index, const std::string& name)
  * STUDENT TODO:
  * The definitions for your custom operators and special member functions will go here!
  */
+
+User::~User() {
+  delete[] _friends;
+}
+
+User::User(const User& user) {
+  _name = user._name;
+  _size = user._size;
+  _capacity = user._capacity;
+  if(user._friends == nullptr) {
+    _friends = nullptr;
+  } else {
+    _friends = new std::string[_capacity];
+    for(int i = 0; i < _size; i++) {
+      _friends[i] = user._friends[i];
+    }
+  }
+}
+
+/**
+ * 拷贝赋值运算符 (Copy Assignment Operator)
+ * 作用：用 source 对象的值，覆盖一个已存在的 this 对象。
+ */
+User& User::operator = (const User& user) {
+  if(this == &user) return *this;
+  delete[] this -> _friends;
+
+  _size = user._size;
+  _capacity = user._capacity;
+  _name = user._name;
+
+  if(user._friends == nullptr) {
+    _friends = nullptr;
+  } else {
+    _friends = new std::string[_capacity];
+    for(int i = 0; i < _size; i++) {
+      _friends[i] = user._friends[i];
+    }
+  }
+  return *this;
+}
+
+std::ostream& operator << (std::ostream& os, const User& user) {
+  os << "User(name=" << user.get_name() << ", friends=[";
+  for(int i = 0; i < user._size; i++) {
+    os << user._friends[i];
+    if(i < user._size - 1) os << ", ";
+  }
+  os << "])";
+  return os;
+}
+
+User& User::operator += (User& user) {
+  if(this == &user) return *this;
+  add_friend(user.get_name());
+  user.add_friend(this -> get_name());
+  return *this;
+}
+
+bool User::operator < (const User& user) const {
+  return this->_name < user.get_name();
+}
